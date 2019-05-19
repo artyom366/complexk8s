@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:  #claim for a storage
+        - name: postgres-storage #name of attached claim
+          persistentVolumeClaim:
+            claimName: postgres-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432 
+          volumeMounts:
+            - name: postgres-storage #use the volume name from attached claim
+              mountPath: /val/lib/postgresql/data #inside container directory
+              subPath: postgres #outside directorty on host machime  
+          env:
+            - name: PGPASSWORD #posgres container uses this env valriable automatically and applies new password
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD             

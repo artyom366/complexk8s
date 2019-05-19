@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  name: postgres-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce #used by a single node
+  resources:
+    requests:
+      storage: 500M  
